@@ -1,0 +1,8 @@
+name: 'Issues - Twitch Url Checker'
+description: 'Gets Twitch Urls from body of issues, adds label for partner/affiliate'
+inputs: 
+  repo-token:
+    description: 'The GITHUB_TOKEN secret'
+runs:
+  using: 'node12'
+  main: 'index.js'
