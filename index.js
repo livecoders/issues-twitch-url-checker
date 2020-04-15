@@ -2,12 +2,11 @@ const core = require('@actions/core');
 const github = require('@actions/github');
 const axios = require('axios');
 const clientId = 'lrmknreis8iakk53pwt87469523kr6';
+const NOT_AFFILIATE_OR_PARTNER = "It looks like you're not Twitch affiliate or partner yet. Please reapply when you've met all the requirements. We'd be happy to evaluate your application then."
 
-async function addLabel(labelName) {
+async function addLabel(client, labelName) {
   console.log(`Start addLabel: ${labelName}`);
   try {
-    const token = core.getInput('repo-token', {required: true});
-    const client = new github.GitHub(token);
     await client.issues.addLabels({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -18,6 +17,31 @@ async function addLabel(labelName) {
     core.setFailed(error.message);
   }
   console.log(`End addLabel: ${labelName}`);
+}
+
+const 
+
+async function addCommentAndClose(client, comment) {
+  console.log(`Start addCommentAndClose ${comment}`);
+  try {
+    console.log(`Adding comment: ${comment}`);
+    await client.issues.createComment({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: github.context.payload.issue.number,
+      body: comment
+    });
+    console.log("Closing issue");
+    await client.issues.update({
+      owner: github.context.repo.owner,
+      repo: github.context.repo.repo,
+      issue_number: github.context.payload.issue.number,
+      state: "closed"
+    })
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+  console.log(`End addCommentAndClose: ${comment}`);
 }
 
 async function run() {
@@ -39,8 +63,14 @@ async function run() {
             
             if (result.data.data.length === 1) {
               let user = result.data.data[0]
+              const token = core.getInput('repo-token', {required: true});
+              const client = new github.GitHub(token);
+
               if (user.broadcaster_type === 'affiliate' || user.broadcaster_type === 'partner') {
-                await addLabel(user.broadcaster_type)
+                await addLabel(client, user.broadcaster_type)
+              } else {
+                console.log("User is not affiliate or partner yet. Closing issue.")
+                await addCommentAndClose(client, NOT_AFFILIATE_OR_PARTNER);
               }
             }
           }
