@@ -42,7 +42,7 @@ async function closeIssue(client) {
       repo: github.context.repo.repo,
       issue_number: github.context.payload.issue.number,
       state: "closed"
-    })
+    });
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -59,7 +59,7 @@ async function run() {
         let urls = github.context.payload.issue.body.match(/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/gm);
         console.log(`Has ${urls.length} urls in the body`);
         for (let index in urls) {
-          console.log(urls[index])
+          console.log(urls[index]);
           let url = new URL(urls[index]);
           if (url.host.includes('twitch.tv') && (url.pathname.match(/\//g) || []).length == 1) {
             let login = url.pathname.replace('/', '').toLowerCase();
@@ -67,14 +67,14 @@ async function run() {
             let result = await axios.get(`https://api.twitch.tv/helix/users?login=${login}`, { headers: { 'Client-Id': clientId } });
             
             if (result.data.data.length === 1) {
-              let user = result.data.data[0]
+              let user = result.data.data[0];
               const token = core.getInput('repo-token', {required: true});
               const client = new github.GitHub(token);
 
               if (user.broadcaster_type === 'affiliate' || user.broadcaster_type === 'partner') {
-                await addLabel(client, user.broadcaster_type)
+                await addLabel(client, user.broadcaster_type);
               } else {
-                console.log("User is not affiliate or partner yet. Commenting and closing issue.")
+                console.log("User is not affiliate or partner yet. Commenting and closing issue.");
                 await addComment(client, NOT_AFFILIATE_OR_PARTNER);
                 await closeIssue(client);
               }
