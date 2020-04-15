@@ -1,6 +1,6 @@
 # Add label for Application Issues javascript action
 
-This action adds an `affiliate` or `partner` label to any issues with the `application` label. The issue has to have a valid Twitch Channel URL to work
+This action adds an `affiliate` or `partner` label to any issues with the `application` label. The issue has to have a valid Twitch Channel URL to work.  If the Twitch channel is neither of these statuses, a friendly comment is added and the issue is closed.
 
 ## Inputs
 repo-token - See usage for what you need in your workflow
