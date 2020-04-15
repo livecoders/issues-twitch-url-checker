@@ -19,8 +19,6 @@ async function addLabel(client, labelName) {
   console.log(`End addLabel: ${labelName}`);
 }
 
-const 
-
 async function addCommentAndClose(client, comment) {
   console.log(`Start addCommentAndClose ${comment}`);
   try {
