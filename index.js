@@ -19,17 +19,24 @@ async function addLabel(client, labelName) {
   console.log(`End addLabel: ${labelName}`);
 }
 
-async function addCommentAndClose(client, comment) {
-  console.log(`Start addCommentAndClose ${comment}`);
+async function addComment(client, comment) {
+  console.log(`Start addComment ${comment}`);
   try {
-    console.log(`Adding comment: ${comment}`);
     await client.issues.createComment({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
       issue_number: github.context.payload.issue.number,
       body: comment
     });
-    console.log("Closing issue");
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+  console.log(`End addComment: ${comment}`);
+}
+
+async function closeIssue(client) {
+  console.log(`Start closeIssue`);
+  try {
     await client.issues.update({
       owner: github.context.repo.owner,
       repo: github.context.repo.repo,
@@ -39,7 +46,7 @@ async function addCommentAndClose(client, comment) {
   } catch (error) {
     core.setFailed(error.message);
   }
-  console.log(`End addCommentAndClose: ${comment}`);
+  console.log(`End closeIssue`);
 }
 
 async function run() {
@@ -67,8 +74,9 @@ async function run() {
               if (user.broadcaster_type === 'affiliate' || user.broadcaster_type === 'partner') {
                 await addLabel(client, user.broadcaster_type)
               } else {
-                console.log("User is not affiliate or partner yet. Closing issue.")
-                await addCommentAndClose(client, NOT_AFFILIATE_OR_PARTNER);
+                console.log("User is not affiliate or partner yet. Commenting and closing issue.")
+                await addComment(client, NOT_AFFILIATE_OR_PARTNER);
+                await closeIssue(client);
               }
             }
           }
