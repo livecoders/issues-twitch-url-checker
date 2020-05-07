@@ -55,6 +55,8 @@ async function closeIssue(client) {
 
 async function run() {
   console.log('Start run');
+  const token = core.getInput('repo-token', {required: true});
+  const client = new github.GitHub(token);
   try {
     if (github.context.payload.issue) {
       console.log('Found issue payload');
@@ -80,9 +82,6 @@ async function run() {
               
               if (result.data.data.length === 1) {
                 let user = result.data.data[0];
-                const token = core.getInput('repo-token', {required: true});
-                const client = new github.GitHub(token);
-
                 if (user.broadcaster_type === 'affiliate' || user.broadcaster_type === 'partner') {
                   await addLabel(client, user.broadcaster_type);
                 } else {
