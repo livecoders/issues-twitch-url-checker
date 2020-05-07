@@ -3,6 +3,8 @@ description: 'Gets Twitch Urls from body of issues, adds label for partner/affil
 inputs: 
   repo-token:
     description: 'The GITHUB_TOKEN secret'
+env:
+  twitch-secret: ${{TWITCH_API_SECRET}}
 runs:
   using: 'node12'
   main: 'index.js'
