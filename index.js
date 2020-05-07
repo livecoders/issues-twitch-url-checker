@@ -33,7 +33,10 @@ async function addComment(client, comment) {
   }
   console.log(`End addComment: ${comment}`);
 }
-
+async function getAppAccessToken() {
+  let result = await axios.post(`https://id.twitch.tv/oauth2/token?client_id=${clientId}&client_secret=${core.getInput('twitch-api-secret', {required: true})}&grant_type=client_credentials`);
+  return result.data.access_token
+}
 async function closeIssue(client) {
   console.log(`Start closeIssue`);
   try {
@@ -64,7 +67,8 @@ async function run() {
           if (url.host.includes('twitch.tv') && (url.pathname.match(/\//g) || []).length == 1) {
             let login = url.pathname.replace('/', '').toLowerCase();
             //get user from twitch
-            let result = await axios.get(`https://api.twitch.tv/helix/users?login=${login}`, { headers: { 'Client-Id': clientId } });
+            var appaccessToken = await getAppAccessToken();
+            let result = await axios.get(`https://api.twitch.tv/helix/users?login=${login}`, { headers: { 'Client-Id': clientId, 'Authorization': `Bearer ${appaccessToken}` } });
             
             if (result.data.data.length === 1) {
               let user = result.data.data[0];
