@@ -73,7 +73,7 @@ async function run() {
           for (let index in urls) {
             console.log(urls[index]);
             let url = new URL(urls[index]);
-            if (url.host.includes('twitch.tv') && (url.pathname.match(/\//g) || []).length == 1) {
+            if (url.host.includes('twitch.tv') && !url.host.includes('clips.twitch.tv') && (url.pathname.match(/\//g) || []).length == 1) {
               console.log('Twitch Url Found');
               found = true;
               let login = url.pathname.replace('/', '').toLowerCase();
