@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const axios = require('axios');
-const clientId = 'lrmknreis8iakk53pwt87469523kr6';
+const clientId = 'mxcwxb4oybh8ldphpytyu9x5ima99o';
 const NO_TWITCH_URL_FOUND = "We couldn't find a twitch URL in your application"
 const NO_TWITCH_USER_FOUND = "We couldn't retrieve your twitch information, make sure your URL is correct."
 const NOT_AFFILIATE_OR_PARTNER = "It looks like you're not Twitch affiliate or partner yet. Please reapply when you've met all the requirements. We'd be happy to evaluate your application then."
